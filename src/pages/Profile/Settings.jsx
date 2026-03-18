@@ -57,7 +57,6 @@ const Settings = () => {
                                  <button className="px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                      Change Avatar
                                  </button>
-                                 <p className="text-xs text-slate-500 mt-2">JPG, GIF or PNG. Max size of 800K</p>
                              </div>
                         </div>
 

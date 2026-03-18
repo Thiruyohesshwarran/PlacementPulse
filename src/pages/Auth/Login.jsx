@@ -28,7 +28,7 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100 text-primary-600 mb-4">
             <User className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Welcome back</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Welcome Back</h2>
           <p className="text-slate-500 mt-2">Sign in to your PlacementPulse account</p>
         </div>
 
