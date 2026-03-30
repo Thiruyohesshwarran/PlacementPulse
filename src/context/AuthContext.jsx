@@ -56,13 +56,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (updates) => {
+    try {
+      const { data } = await api.put('/auth/profile', updates);
+      setUser(data);
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error?.response?.data?.message || 'Update failed. Please try again.',
+      };
+    }
+  };
+
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      const { data } = await api.put('/auth/password', { currentPassword, newPassword });
+      return { success: true, message: data?.message || 'Password updated successfully.' };
+    } catch (error) {
+      return {
+        success: false,
+        message: error?.response?.data?.message || 'Password update failed. Please try again.',
+      };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('userInfo');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, updateProfile, changePassword, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

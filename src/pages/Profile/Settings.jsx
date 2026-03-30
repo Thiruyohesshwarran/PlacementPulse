@@ -1,26 +1,106 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Moon, Sun, Monitor, Bell, Lock, User as UserIcon } from 'lucide-react';
+import { Bell, Lock, User as UserIcon } from 'lucide-react';
 
 const Settings = () => {
-    const { user } = useAuth();
-    const [theme, setTheme] = useState('system'); // 'light', 'dark', 'system'
+    const { user, updateProfile, changePassword } = useAuth();
+    const [activeSection, setActiveSection] = useState('profile');
+    const [form, setForm] = useState({ name: '', college: '', targetRole: '' });
+    const [saving, setSaving] = useState(false);
+    const [status, setStatus] = useState({ type: '', message: '' });
 
-    // Mock toggle function for Theme - in a real app this controls the HTML element class
-    const toggleTheme = (newTheme) => {
-        setTheme(newTheme);
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else if (newTheme === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            // System matching logic
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
+    const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' });
+    const [changingPassword, setChangingPassword] = useState(false);
+
+    const [quietHours, setQuietHours] = useState({ enabled: false, start: '22:00', end: '07:00' });
+    const [quietStatus, setQuietStatus] = useState({ type: '', message: '' });
+
+    useEffect(() => {
+        setForm({
+            name: user?.name || '',
+            college: user?.college || '',
+            targetRole: user?.targetRole || '',
+        });
+    }, [user]);
+
+    useEffect(() => {
+        const raw = localStorage.getItem('quietHours');
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw);
+                if (typeof parsed === 'object' && parsed) {
+                    setQuietHours({
+                        enabled: Boolean(parsed.enabled),
+                        start: parsed.start || '22:00',
+                        end: parsed.end || '07:00',
+                    });
+                }
+            } catch {
+                localStorage.removeItem('quietHours');
             }
         }
+    }, []);
+
+    const onChange = (field) => (e) => {
+        setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+    const onPasswordChange = (field) => (e) => {
+        setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        setStatus({ type: '', message: '' });
+
+        const result = await updateProfile({
+            name: form.name.trim(),
+            college: form.college.trim(),
+            targetRole: form.targetRole.trim(),
+        });
+
+        if (result.success) {
+            setStatus({ type: 'success', message: 'Profile updated successfully.' });
+        } else {
+            setStatus({ type: 'error', message: result.message });
+        }
+
+        setSaving(false);
+    };
+
+    const onPasswordSubmit = async (e) => {
+        e.preventDefault();
+        setPasswordStatus({ type: '', message: '' });
+
+        if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+            setPasswordStatus({ type: 'error', message: 'All password fields are required.' });
+            return;
+        }
+
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            setPasswordStatus({ type: 'error', message: 'New password and confirmation do not match.' });
+            return;
+        }
+
+        setChangingPassword(true);
+        const result = await changePassword(passwordForm.currentPassword, passwordForm.newPassword);
+
+        if (result.success) {
+            setPasswordStatus({ type: 'success', message: result.message });
+            setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        } else {
+            setPasswordStatus({ type: 'error', message: result.message });
+        }
+
+        setChangingPassword(false);
+    };
+
+    const onQuietHoursSave = () => {
+        localStorage.setItem('quietHours', JSON.stringify(quietHours));
+        setQuietStatus({ type: 'success', message: 'Quiet hours saved.' });
+        setTimeout(() => setQuietStatus({ type: '', message: '' }), 2000);
     };
 
     return (
@@ -33,85 +113,192 @@ const Settings = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Side Navigation for settings */}
                 <div className="space-y-1 hidden md:block">
-                    <button className="w-full flex items-center px-4 py-2.5 bg-primary-50 dark:bg-primary-900/20 text-primary-600 text-sm font-medium rounded-lg">
+                    <button
+                        type="button"
+                        onClick={() => setActiveSection('profile')}
+                        className={`w-full flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                            activeSection === 'profile'
+                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                    >
                         <UserIcon className="w-4 h-4 mr-3" /> Profile
                     </button>
-                    <button className="w-full flex items-center px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium rounded-lg transition-colors">
+                    <button
+                        type="button"
+                        onClick={() => setActiveSection('security')}
+                        className={`w-full flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                            activeSection === 'security'
+                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                    >
                         <Lock className="w-4 h-4 mr-3" /> Security
                     </button>
-                    <button className="w-full flex items-center px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium rounded-lg transition-colors">
+                    <button
+                        type="button"
+                        onClick={() => setActiveSection('notifications')}
+                        className={`w-full flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                            activeSection === 'notifications'
+                                ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        }`}
+                    >
                         <Bell className="w-4 h-4 mr-3" /> Notifications
                     </button>
                 </div>
 
                 <div className="md:col-span-3 space-y-8">
-                    {/* Basic Info */}
-                    <div className="card p-6">
-                        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Profile Information</h2>
-                        
-                        <div className="flex items-center space-x-6 mb-8">
-                             <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-3xl">
-                                 {user?.name?.[0] || 'U'}
-                             </div>
-                             <div>
-                                 <button className="px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                     Change Avatar
-                                 </button>
-                             </div>
-                        </div>
+                    {activeSection === 'profile' && (
+                        <div className="card p-6">
+                            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Profile Information</h2>
 
-                        <form className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
-                                    <input type="text" className="input-field" defaultValue={user?.name || ''} />
+                            <div className="flex items-center space-x-6 mb-8">
+                                <div className="w-24 h-24 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-100 ring-1 ring-primary-200/60 dark:ring-primary-500/30 flex items-center justify-center font-bold text-3xl">
+                                    {user?.name?.[0] || 'U'}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
-                                    <input type="email" disabled className="input-field bg-slate-50 dark:bg-slate-800/50 cursor-not-allowed text-slate-500" defaultValue={user?.email || ''} />
+                                    <button className="px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                        Change Avatar
+                                    </button>
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">College</label>
-                                <input type="text" className="input-field" defaultValue={user?.college || 'Test College'} />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Target Role</label>
-                                <input type="text" className="input-field" defaultValue={user?.targetRole || 'Software Development Engineer'} />
-                            </div>
-                            <div className="pt-4">
-                                <button type="button" className="btn-primary">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
 
-                    {/* Appearance */}
-                    <div className="card p-6">
-                        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">Appearance</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <button 
-                                onClick={() => toggleTheme('light')}
-                                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${theme === 'light' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10 text-primary-600' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-primary-300'}`}
-                            >
-                                <Sun className="w-6 h-6 mb-2" />
-                                <span className="text-sm font-medium">Light</span>
-                            </button>
-                            <button 
-                                onClick={() => toggleTheme('dark')}
-                                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${theme === 'dark' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10 text-primary-600' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-primary-300'}`}
-                            >
-                                <Moon className="w-6 h-6 mb-2" />
-                                <span className="text-sm font-medium">Dark</span>
-                            </button>
-                            <button 
-                                onClick={() => toggleTheme('system')}
-                                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all ${theme === 'system' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10 text-primary-600' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-primary-300'}`}
-                            >
-                                <Monitor className="w-6 h-6 mb-2" />
-                                <span className="text-sm font-medium">System</span>
-                            </button>
+                            <form className="space-y-4" onSubmit={onSubmit}>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                                        <input type="text" className="input-field" value={form.name} onChange={onChange('name')} />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                                        <input type="email" disabled className="input-field bg-slate-50 dark:bg-slate-800/50 cursor-not-allowed text-slate-500" defaultValue={user?.email || ''} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">College</label>
+                                    <input type="text" className="input-field" value={form.college} onChange={onChange('college')} />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Target Role</label>
+                                    <input type="text" className="input-field" value={form.targetRole} onChange={onChange('targetRole')} />
+                                </div>
+                                {status.message && (
+                                    <div className={`text-sm ${status.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                        {status.message}
+                                    </div>
+                                )}
+                                <div className="pt-4">
+                                    <button type="submit" className="btn-primary" disabled={saving}>
+                                        {saving ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </div>
+                    )}
+
+                    {activeSection === 'security' && (
+                        <div className="card p-6">
+                            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Security</h2>
+                            <p className="text-sm text-slate-500 mb-6">Update your account password.</p>
+
+                            <form className="space-y-4" onSubmit={onPasswordSubmit}>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Current Password</label>
+                                    <input
+                                        type="password"
+                                        className="input-field"
+                                        value={passwordForm.currentPassword}
+                                        onChange={onPasswordChange('currentPassword')}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">New Password</label>
+                                    <input
+                                        type="password"
+                                        className="input-field"
+                                        value={passwordForm.newPassword}
+                                        onChange={onPasswordChange('newPassword')}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm New Password</label>
+                                    <input
+                                        type="password"
+                                        className="input-field"
+                                        value={passwordForm.confirmPassword}
+                                        onChange={onPasswordChange('confirmPassword')}
+                                    />
+                                </div>
+                                {passwordStatus.message && (
+                                    <div className={`text-sm ${passwordStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                        {passwordStatus.message}
+                                    </div>
+                                )}
+                                <div className="pt-2">
+                                    <button type="submit" className="btn-primary" disabled={changingPassword}>
+                                        {changingPassword ? 'Updating...' : 'Change Password'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
+
+                    {activeSection === 'notifications' && (
+                        <div className="card p-6">
+                            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Notifications</h2>
+                            <p className="text-sm text-slate-500 mb-6">Set quiet hours to pause non-critical alerts.</p>
+
+                            <div className="space-y-4">
+                                <label className="flex items-center justify-between gap-4">
+                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Enable Quiet Hours</span>
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={quietHours.enabled}
+                                            onChange={(e) => setQuietHours((prev) => ({ ...prev, enabled: e.target.checked }))}
+                                        />
+                                        <div className="w-11 h-6 rounded-full bg-slate-300 dark:bg-slate-700 transition-colors peer-checked:bg-primary-600" />
+                                        <div className="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
+                                    </div>
+                                </label>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Start Time</label>
+                                        <input
+                                            type="time"
+                                            className="input-field"
+                                            value={quietHours.start}
+                                            onChange={(e) => setQuietHours((prev) => ({ ...prev, start: e.target.value }))}
+                                            disabled={!quietHours.enabled}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">End Time</label>
+                                        <input
+                                            type="time"
+                                            className="input-field"
+                                            value={quietHours.end}
+                                            onChange={(e) => setQuietHours((prev) => ({ ...prev, end: e.target.value }))}
+                                            disabled={!quietHours.enabled}
+                                        />
+                                    </div>
+                                </div>
+                                {quietStatus.message && (
+                                    <div className={`text-sm ${quietStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                        {quietStatus.message}
+                                    </div>
+                                )}
+                                <div className="pt-2">
+                                    <button type="button" className="btn-primary" onClick={onQuietHoursSave}>
+                                        Save Quiet Hours
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

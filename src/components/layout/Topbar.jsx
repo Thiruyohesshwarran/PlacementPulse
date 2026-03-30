@@ -1,10 +1,30 @@
-import { Bell, Search, User as UserIcon, LogOut, Settings } from 'lucide-react';
+import { Bell, Search, User as UserIcon, LogOut, Settings, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const Topbar = () => {
     const { user, logout } = useAuth();
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [theme, setTheme] = useState(() => {
+        if (typeof window === 'undefined') return 'light';
+        const stored = window.localStorage.getItem('theme');
+        if (stored === 'dark' || stored === 'light') return stored;
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+    });
+
+    useEffect(() => {
+        if (typeof document === 'undefined') return;
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        if (typeof window !== 'undefined') {
+            window.localStorage.setItem('theme', theme);
+        }
+    }, [theme]);
 
     return (
         <header className="h-16 bg-white dark:bg-dark-paper border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 sticky top-0 z-20">
@@ -20,6 +40,15 @@ const Topbar = () => {
 
             {/* Actions */}
             <div className="flex items-center space-x-4">
+                <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    className="relative p-2 rounded-full text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    aria-label="Toggle dark mode"
+                    title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                    type="button"
+                >
+                    {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </button>
                 <button className="relative p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
                     <Bell className="w-5 h-5" />
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -31,7 +60,7 @@ const Topbar = () => {
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                         className="flex items-center space-x-2 focus:outline-none"
                     >
-                        <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-semibold">
+                        <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-100 ring-1 ring-primary-200/60 dark:ring-primary-500/30 flex items-center justify-center font-semibold">
                             {user?.name?.charAt(0) || 'U'}
                         </div>
                     </button>
