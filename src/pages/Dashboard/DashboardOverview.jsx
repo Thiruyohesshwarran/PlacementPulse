@@ -52,7 +52,7 @@ const DashboardOverview = () => {
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard Overview</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Dashboard</h1>
         <p className="text-slate-500 mt-1">Welcome back{user?.name ? `, ${user.name}` : ''}. Here's your preparation status.</p>
       </div>
 
