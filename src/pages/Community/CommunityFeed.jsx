@@ -1,5 +1,3 @@
-// Still there is a problem with tags
-
 import React, { useCallback, useEffect, useState } from 'react';
 import { Building2, Edit2, MessageCircle, Plus, PlusCircle, Share2, Tag, Trash2, ThumbsUp, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';

@@ -115,7 +115,7 @@ const DSATracker = () => {
           <div className="flex space-x-3 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 hide-scrollbar">
             <select className="input-field h-10 py-0 min-w-[120px]" value={filterTopic} onChange={(e) => setFilterTopic(e.target.value)}>
               <option value="">All Topics</option>
-              {['Arrays','Graphs','DP','Design','Trees','Strings','Sorting','Backtracking','Greedy'].map(t => <option key={t} value={t}>{t}</option>)}
+              {['Arrays','Graphs','DP','Trees','Strings','Sorting','Backtracking','Greedy','Stack & Queue'].map(t => <option key={t} value={t}>{t}</option>)}
             </select>
             <select className="input-field h-10 py-0 min-w-[120px]" value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)}>
               <option value="">Difficulty</option>
@@ -206,7 +206,7 @@ const DSATracker = () => {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Topic *</label>
                   <select className="input-field" value={form.topic} onChange={e => setForm(f => ({...f, topic: e.target.value}))}>
-                    {['Arrays','Graphs','DP','Design','Trees','Strings','Sorting','Backtracking','Greedy'].map(t => <option key={t}>{t}</option>)}
+                    {['Arrays','Graphs','DP','Trees','Strings','Sorting','Backtracking','Greedy','Stack & Queue'].map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
               </div>

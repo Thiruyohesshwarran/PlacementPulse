@@ -18,7 +18,7 @@ const MockInterviews = () => {
       setLoading(true);
       const { data } = await getInterviews();
       setInterviews(data);
-    } catch (e) {
+    } catch {
       setError('Failed to load interviews.');
     } finally {
       setLoading(false);
@@ -82,7 +82,7 @@ const MockInterviews = () => {
               {loading ? <p className="text-slate-400 text-sm">Loading...</p> : upcoming.length === 0 ? <p className="text-slate-400 text-sm">No upcoming interviews. Schedule one!</p> : upcoming.map(interview => (
                 <div key={interview._id} className="flex flex-col sm:flex-row p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/50 justify-between sm:items-center gap-4">
                   <div className="flex items-center space-x-4">
-                     <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">
+                     <div className="w-12 h-12 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-600 flex items-center justify-center font-bold text-lg">
                        {interview.company[0]}
                      </div>
                      <div>
@@ -95,7 +95,7 @@ const MockInterviews = () => {
                   <div className="flex gap-2">
                     <button onClick={() => openEdit(interview)} className="p-2 text-slate-400 hover:text-primary-600"><Edit2 className="w-4 h-4" /></button>
                     <button onClick={() => handleDelete(interview._id)} className="p-2 text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
-                    <button className="px-4 py-2 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center">
+                    <button className="px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-200 border border-primary-200 dark:border-primary-900/60 rounded-lg text-sm font-medium hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors flex items-center justify-center">
                       <Video className="w-4 h-4 mr-2" /> Join Call
                     </button>
                   </div>
@@ -112,7 +112,7 @@ const MockInterviews = () => {
                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-3">
                      <div className="flex items-center space-x-3">
                        <h3 className="font-semibold text-slate-900 dark:text-white">{interview.company}</h3>
-                       <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs rounded-full">{interview.type}</span>
+                       <span className="px-2 py-0.5 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-200 text-xs rounded-full">{interview.type}</span>
                      </div>
                      <div className="flex items-center gap-3">
                        <span className="flex items-center text-sm text-slate-500"><Clock className="w-4 h-4 mr-1.5" />{new Date(interview.date).toLocaleDateString()}</span>
@@ -135,7 +135,7 @@ const MockInterviews = () => {
         {/* Right Col - Stats Summary */}
         <div className="space-y-6">
           <div className="card p-6 text-center">
-            <div className="w-20 h-20 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 mb-4">
+            <div className="w-20 h-20 mx-auto rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 mb-4">
               <span className="text-3xl font-bold">{avgRating}</span>
             </div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">Average Rating</h3>
