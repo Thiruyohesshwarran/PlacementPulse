@@ -98,6 +98,25 @@ const DSATracker = () => {
       </div>
 
       <div className="card">
+        {/* Status Legend */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide mb-3">Status Reference</p>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <span className="text-sm text-slate-700 dark:text-slate-300"><span className="font-semibold">Solved</span> - Problem completed</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-amber-600" />
+              <span className="text-sm text-slate-700 dark:text-slate-300"><span className="font-semibold">Revision</span> - Needs review</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-slate-400" />
+              <span className="text-sm text-slate-700 dark:text-slate-300"><span className="font-semibold">Pending</span> - Not attempted yet</span>
+            </div>
+          </div>
+        </div>
+
         {/* Toolbar */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-50 dark:bg-slate-800/50">
           <div className="relative w-full sm:max-w-xs">

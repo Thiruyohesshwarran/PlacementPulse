@@ -1,9 +1,11 @@
 import { Bell, Search, User as UserIcon, LogOut, Settings, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const Topbar = () => {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [theme, setTheme] = useState(() => {
         if (typeof window === 'undefined') return 'light';
@@ -70,19 +72,25 @@ const Topbar = () => {
                             <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
                                 <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.name}</p>
                                 <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-                            </div>
-                            <a href="#profile" className="flex items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                            <button 
+                                onClick={() => { navigate('/settings'); setDropdownOpen(false); }}
+                                className="flex w-full items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                            >
                                 <UserIcon className="w-4 h-4 mr-2" /> Profile
-                            </a>
-                            <a href="#settings" className="flex items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                            </button>
+                            <button 
+                                onClick={() => { navigate('/settings'); setDropdownOpen(false); }}
+                                className="flex w-full items-center px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                            >
                                 <Settings className="w-4 h-4 mr-2" /> Settings
-                            </a>
+                            </button>
                             <button 
                                 onClick={logout}
                                 className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                             >
                                 <LogOut className="w-4 h-4 mr-2" /> Logout
                             </button>
+                            </div>
                         </div>
                     )}
                 </div>
