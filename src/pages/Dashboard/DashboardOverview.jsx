@@ -7,24 +7,28 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { getDSAStats } from '../../services/dsaService';
 import { getInterviewStats } from '../../services/interviewService';
 
-const StatCard = ({ title, value, icon: Icon, trend }) => (
-  <div className="card p-6 flex flex-col">
-    <div className="flex justify-between items-start mb-4">
-      <div className="p-3 bg-primary-50 dark:bg-primary-900/20 text-primary-600 rounded-lg">
-        <Icon className="w-6 h-6" />
+const StatCard = ({ title, value, icon, trend }) => {
+  const iconNode = React.createElement(icon, { className: 'w-6 h-6' });
+
+  return (
+    <div className="card p-6 flex flex-col">
+      <div className="flex justify-between items-start mb-4">
+        <div className="p-3 bg-primary-50 dark:bg-primary-900/20 text-primary-600 rounded-lg">
+          {iconNode}
+        </div>
+        {trend && (
+          <span className="flex items-center text-sm font-medium text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-full">
+            {trend} <ArrowUpRight className="w-3 h-3 ml-1" />
+          </span>
+        )}
       </div>
-      {trend && (
-        <span className="flex items-center text-sm font-medium text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-full">
-          {trend} <ArrowUpRight className="w-3 h-3 ml-1" />
-        </span>
-      )}
+      <div>
+        <h3 className="text-slate-500 dark:text-slate-400 text-sm font-medium">{title}</h3>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{value}</h2>
+      </div>
     </div>
-    <div>
-      <h3 className="text-slate-500 dark:text-slate-400 text-sm font-medium">{title}</h3>
-      <h2 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">{value}</h2>
-    </div>
-  </div>
-);
+  );
+};
 
 const DashboardOverview = () => {
   const { user } = useAuth();
@@ -32,6 +36,9 @@ const DashboardOverview = () => {
   const [dsaStats, setDsaStats] = useState({ totalSolved: 0, weekly: [], streak: 0 });
   const [ivStats, setIvStats] = useState({ total: 0, upcoming: 0, upcomingList: [], avgRating: 0 });
   const [loading, setLoading] = useState(true);
+  const weeklyActivity = dsaStats.weekly || [];
+  const maxWeeklySolved = Math.max(0, ...weeklyActivity.map((entry) => Number(entry.solved) || 0));
+  const yAxisTicks = Array.from({ length: maxWeeklySolved + 1 }, (_, index) => index);
 
   useEffect(() => {
     const load = async () => {
@@ -39,7 +46,7 @@ const DashboardOverview = () => {
         const [dsa, iv] = await Promise.all([getDSAStats(), getInterviewStats()]);
         setDsaStats(dsa.data);
         setIvStats(iv.data);
-      } catch (e) {
+      } catch {
         // silently fail — stats just stay at 0
       } finally {
         setLoading(false);
@@ -82,7 +89,15 @@ const DashboardOverview = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#64748b', fontSize: 12 }}
+                  allowDecimals={false}
+                  domain={[0, maxWeeklySolved]}
+                  ticks={yAxisTicks}
+                  tickFormatter={(value) => `${Math.round(value)}`}
+                />
                 <Tooltip 
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#fff' }}
                 />
