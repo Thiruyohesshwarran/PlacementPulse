@@ -1,5 +1,5 @@
 import { Bell, Search, User as UserIcon, LogOut, Settings, Sun, Moon } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authContextState';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 

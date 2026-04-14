@@ -1,46 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from 'react';
+import { useAuth } from '../../context/authContextState';
 import { Bell, Lock, User as UserIcon } from 'lucide-react';
 
 const Settings = () => {
     const { user, updateProfile, changePassword } = useAuth();
     const [activeSection, setActiveSection] = useState('profile');
-    const [form, setForm] = useState({ name: '', college: '', targetRole: '' });
+    const [form, setForm] = useState(() => ({
+        name: user?.name || '',
+        college: user?.college || '',
+        targetRole: user?.targetRole || '',
+    }));
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState({ type: '', message: '' });
 
     const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
     const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' });
     const [changingPassword, setChangingPassword] = useState(false);
+    const hasPassword = Boolean(user?.hasPassword);
 
-    const [quietHours, setQuietHours] = useState({ enabled: false, start: '22:00', end: '07:00' });
-    const [quietStatus, setQuietStatus] = useState({ type: '', message: '' });
-
-    useEffect(() => {
-        setForm({
-            name: user?.name || '',
-            college: user?.college || '',
-            targetRole: user?.targetRole || '',
-        });
-    }, [user]);
-
-    useEffect(() => {
-        const raw = localStorage.getItem('quietHours');
-        if (raw) {
-            try {
-                const parsed = JSON.parse(raw);
-                if (typeof parsed === 'object' && parsed) {
-                    setQuietHours({
-                        enabled: Boolean(parsed.enabled),
-                        start: parsed.start || '22:00',
-                        end: parsed.end || '07:00',
-                    });
-                }
-            } catch {
-                localStorage.removeItem('quietHours');
-            }
+    const [quietHours, setQuietHours] = useState(() => {
+        if (typeof window === 'undefined') {
+            return { enabled: false, start: '22:00', end: '07:00' };
         }
-    }, []);
+
+        const raw = window.localStorage.getItem('quietHours');
+        if (!raw) {
+            return { enabled: false, start: '22:00', end: '07:00' };
+        }
+
+        try {
+            const parsed = JSON.parse(raw);
+            if (typeof parsed === 'object' && parsed) {
+                return {
+                    enabled: Boolean(parsed.enabled),
+                    start: parsed.start || '22:00',
+                    end: parsed.end || '07:00',
+                };
+            }
+        } catch {
+            window.localStorage.removeItem('quietHours');
+        }
+
+        return { enabled: false, start: '22:00', end: '07:00' };
+    });
+    const [quietStatus, setQuietStatus] = useState({ type: '', message: '' });
 
     const onChange = (field) => (e) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -74,7 +77,12 @@ const Settings = () => {
         e.preventDefault();
         setPasswordStatus({ type: '', message: '' });
 
-        if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+        if (!passwordForm.newPassword || !passwordForm.confirmPassword) {
+            setPasswordStatus({ type: 'error', message: 'New password and confirmation are required.' });
+            return;
+        }
+
+        if (hasPassword && !passwordForm.currentPassword) {
             setPasswordStatus({ type: 'error', message: 'All password fields are required.' });
             return;
         }
@@ -200,20 +208,28 @@ const Settings = () => {
                     {activeSection === 'security' && (
                         <div className="card p-6">
                             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Security</h2>
-                            <p className="text-sm text-slate-500 mb-6">Update your account password.</p>
+                            <p className="text-sm text-slate-500 mb-6">
+                                {hasPassword
+                                    ? 'Update your account password.'
+                                    : 'Set a local password so you can also sign in without Google.'}
+                            </p>
 
                             <form className="space-y-4" onSubmit={onPasswordSubmit}>
+                                {hasPassword && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Current Password</label>
+                                        <input
+                                            type="password"
+                                            className="input-field"
+                                            value={passwordForm.currentPassword}
+                                            onChange={onPasswordChange('currentPassword')}
+                                        />
+                                    </div>
+                                )}
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Current Password</label>
-                                    <input
-                                        type="password"
-                                        className="input-field"
-                                        value={passwordForm.currentPassword}
-                                        onChange={onPasswordChange('currentPassword')}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">New Password</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                        {hasPassword ? 'New Password' : 'Create Password'}
+                                    </label>
                                     <input
                                         type="password"
                                         className="input-field"
@@ -222,7 +238,9 @@ const Settings = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm New Password</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                        {hasPassword ? 'Confirm New Password' : 'Confirm Password'}
+                                    </label>
                                     <input
                                         type="password"
                                         className="input-field"

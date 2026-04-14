@@ -1,32 +1,33 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { useState } from 'react';
 import api from '../services/api';
-const AuthContext = createContext();
+import { AuthContext } from './authContextState';
 
-export const useAuth = () => useContext(AuthContext);
+const getStoredUser = () => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const raw = window.localStorage.getItem('userInfo');
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed?.token && typeof parsed.token === 'string' && parsed.token.split('.').length === 3) {
+      return parsed;
+    }
+  } catch {
+    window.localStorage.removeItem('userInfo');
+  }
+
+  window.localStorage.removeItem('userInfo');
+  return null;
+};
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const isLikelyJwt = (token) => typeof token === 'string' && token.split('.').length === 3;
-
-  useEffect(() => {
-    // Check local storage for token on mount and discard malformed legacy tokens
-    const raw = localStorage.getItem('userInfo');
-    if (raw) {
-      try {
-        const parsed = JSON.parse(raw);
-        if (parsed?.token && isLikelyJwt(parsed.token)) {
-          setUser(parsed);
-        } else {
-          localStorage.removeItem('userInfo');
-        }
-      } catch {
-        localStorage.removeItem('userInfo');
-      }
-    }
-    setLoading(false);
-  }, []);
+  const [user, setUser] = useState(() => getStoredUser());
+  const [loading] = useState(false);
 
   const login = async (email, password) => {
     try {
@@ -38,6 +39,20 @@ export const AuthProvider = ({ children }) => {
       return {
         success: false,
         message: error?.response?.data?.message || 'Login failed. Please try again.',
+      };
+    }
+  };
+
+  const googleLogin = async (credential) => {
+    try {
+      const { data } = await api.post('/auth/google', { credential });
+      setUser(data);
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error?.response?.data?.message || 'Google sign-in failed. Please try again.',
       };
     }
   };
@@ -88,7 +103,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, updateProfile, changePassword, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, googleLogin, register, updateProfile, changePassword, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

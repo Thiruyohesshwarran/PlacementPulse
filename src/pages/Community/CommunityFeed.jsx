@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Building2, Edit2, MessageCircle, Plus, PlusCircle, Share2, Tag, Trash2, ThumbsUp, X } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authContextState';
 import { createCommunityPost, deleteCommunityPost, getCommunityPosts, updateCommunityPost } from '../../services/communityService';
 
 const featuredPosts = [
