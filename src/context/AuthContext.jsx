@@ -43,20 +43,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const googleLogin = async (credential) => {
-    try {
-      const { data } = await api.post('/auth/google', { credential });
-      setUser(data);
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        message: error?.response?.data?.message || 'Google sign-in failed. Please try again.',
-      };
-    }
-  };
-
   const register = async (name, email, password, college, targetRole) => {
     try {
       const { data } = await api.post('/auth/register', { name, email, password, college, targetRole });
@@ -103,8 +89,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, googleLogin, register, updateProfile, changePassword, logout, loading }}>
+    <AuthContext.Provider value={{ user, setUser, login, register, updateProfile, changePassword, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
+
 };

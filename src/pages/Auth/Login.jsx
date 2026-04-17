@@ -8,8 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [googleError, setGoogleError] = useState('');
-  const { login, googleLogin } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,17 +22,6 @@ const Login = () => {
     }
   };
 
-  const handleGoogleCredential = async (credential) => {
-    setError('');
-    setGoogleError('');
-    const result = await googleLogin(credential);
-
-    if (result.success) {
-      navigate('/');
-    } else {
-      setGoogleError(result.message || 'Google sign-in failed');
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
@@ -96,16 +84,8 @@ const Login = () => {
           <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
         </div>
 
-        {googleError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-200">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" />
-              <span>{googleError}</span>
-            </div>
-          </div>
-        )}
+        <GoogleSignInButton label="Continue with Google" />
 
-        <GoogleSignInButton onCredential={handleGoogleCredential} label="Continue with Google" />
 
         <p className="mt-6 text-center text-sm text-slate-500">
           Don't have an account?{' '}

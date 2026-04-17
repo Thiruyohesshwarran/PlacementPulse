@@ -14,6 +14,8 @@ import CompanyPrep from './pages/CompanyPrep/CompanyPrep';
 import Insights from './pages/Insights/Insights';
 import CommunityFeed from './pages/Community/CommunityFeed';
 import Settings from './pages/Profile/Settings';
+import AuthSuccess from './pages/Auth/AuthSuccess';
+
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -32,6 +34,8 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
+
           
           {/* Protected Routes nested in DashboardLayout */}
           <Route path="/" element={

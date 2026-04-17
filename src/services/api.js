@@ -2,7 +2,9 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
+  withCredentials: true,
 });
+
 
 const isLikelyJwt = (token) => typeof token === 'string' && token.split('.').length === 3;
 
