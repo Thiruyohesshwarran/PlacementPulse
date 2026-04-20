@@ -25,7 +25,7 @@ const DSATracker = () => {
       if (filterDifficulty) params.difficulty = filterDifficulty;
       const { data } = await getDSALogs(params);
       setLogs(data);
-    } catch (e) {
+    } catch {
       setError('Failed to load problems.');
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ const DSATracker = () => {
     try {
       await deleteDSALog(id);
       fetchLogs();
-    } catch (e) {
+    } catch {
       alert('Failed to delete.');
     }
   };
@@ -203,7 +203,7 @@ const DSATracker = () => {
 
       {/* Add / Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed -top-6 left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-lg">
             <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">{editing ? 'Edit Problem' : 'Add Problem'}</h2>

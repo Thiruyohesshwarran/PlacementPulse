@@ -16,7 +16,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className={`${collapsed ? 'w-20' : 'w-64'} h-screen bg-white dark:bg-dark-paper border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col sticky top-0 md:relative z-30`}>
+        <aside className={`${collapsed ? 'w-20' : 'w-64'} min-h-screen bg-white dark:bg-dark-paper border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col sticky top-0 md:relative z-30`}>
             {/* Logo Area */}
             <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800">
                 {!collapsed && (

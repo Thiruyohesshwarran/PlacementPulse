@@ -4,16 +4,16 @@ import Topbar from './Topbar';
 
 const DashboardLayout = () => {
     return (
-        <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-900">
+        <div className="flex min-h-screen overflow-hidden bg-slate-50 dark:bg-slate-900">
             {/* Sidebar is fixed on the left */}
             <Sidebar />
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col h-screen overflow-hidden">
+            <div className="flex-1 flex min-h-0 flex-col overflow-hidden">
                 <Topbar />
                 
                 {/* Scrollable Main Area */}
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 p-6">
+                <main className="flex-1 min-h-0 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 p-6">
                     <Outlet />
                 </main>
             </div>

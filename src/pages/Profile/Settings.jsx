@@ -1,6 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/authContextState';
 import { Bell, Lock, User as UserIcon } from 'lucide-react';
+
+const toMinutes = (time) => {
+    const [hour, minute] = String(time || '00:00').split(':').map(Number);
+    return (hour * 60) + minute;
+};
+
+const isQuietHoursActiveNow = (start, end, now) => {
+    const startMinutes = toMinutes(start);
+    const endMinutes = toMinutes(end);
+
+    if (startMinutes === endMinutes) {
+        return false;
+    }
+
+    if (startMinutes < endMinutes) {
+        return now >= startMinutes && now < endMinutes;
+    }
+
+    // Overnight window, for example 22:00 -> 07:00.
+    return now >= startMinutes || now < endMinutes;
+};
 
 const Settings = () => {
     const { user, updateProfile, changePassword } = useAuth();
@@ -44,6 +65,21 @@ const Settings = () => {
         return { enabled: false, start: '22:00', end: '07:00' };
     });
     const [quietStatus, setQuietStatus] = useState({ type: '', message: '' });
+    const [nowMinutes, setNowMinutes] = useState(0);
+
+    useEffect(() => {
+        const updateNowMinutes = () => {
+            const now = new Date();
+            setNowMinutes((now.getHours() * 60) + now.getMinutes());
+        };
+
+        updateNowMinutes();
+        const interval = window.setInterval(updateNowMinutes, 60 * 1000);
+        return () => window.clearInterval(interval);
+    }, []);
+
+    const hasInvalidQuietRange = quietHours.start === quietHours.end;
+    const quietActiveNow = quietHours.enabled && !hasInvalidQuietRange && isQuietHoursActiveNow(quietHours.start, quietHours.end, nowMinutes);
 
     const onChange = (field) => (e) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -106,6 +142,11 @@ const Settings = () => {
     };
 
     const onQuietHoursSave = () => {
+        if (hasInvalidQuietRange) {
+            setQuietStatus({ type: 'error', message: 'Start and end time cannot be the same.' });
+            return;
+        }
+
         localStorage.setItem('quietHours', JSON.stringify(quietHours));
         setQuietStatus({ type: 'success', message: 'Quiet hours saved.' });
         setTimeout(() => setQuietStatus({ type: '', message: '' }), 2000);
@@ -268,6 +309,13 @@ const Settings = () => {
                             <p className="text-sm text-slate-500 mb-6">Set quiet hours to pause non-critical alerts.</p>
 
                             <div className="space-y-4">
+                                <div className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-3 py-2">
+                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Status</span>
+                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${quietActiveNow ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300'}`}>
+                                        {quietActiveNow ? 'Active now' : 'Not active'}
+                                    </span>
+                                </div>
+
                                 <label className="flex items-center justify-between gap-4">
                                     <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Enable Quiet Hours</span>
                                     <div className="relative">
@@ -304,13 +352,18 @@ const Settings = () => {
                                         />
                                     </div>
                                 </div>
+                                {quietHours.enabled && hasInvalidQuietRange && (
+                                    <div className="text-sm text-red-600">
+                                        Start and end time cannot be the same.
+                                    </div>
+                                )}
                                 {quietStatus.message && (
                                     <div className={`text-sm ${quietStatus.type === 'success' ? 'text-emerald-600' : 'text-red-600'}`}>
                                         {quietStatus.message}
                                     </div>
                                 )}
                                 <div className="pt-2">
-                                    <button type="button" className="btn-primary" onClick={onQuietHoursSave}>
+                                    <button type="button" className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed" onClick={onQuietHoursSave} disabled={quietHours.enabled && hasInvalidQuietRange}>
                                         Save Quiet Hours
                                     </button>
                                 </div>

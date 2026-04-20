@@ -73,7 +73,7 @@ const Insights = () => {
            <li className="flex items-start">
              <div className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-2 mr-3 shrink-0"></div>
              <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-               You have solved only 15% of the Hard problems. To target Google L3, aim to boost your Hard problem-solving consistency.
+               You are also lacking in Trees and Graphs. Try to solve at least 5 problems from each of these topics in the next 2 weeks to see a significant boost in your interview performance.
              </p>
            </li>
          </ul>

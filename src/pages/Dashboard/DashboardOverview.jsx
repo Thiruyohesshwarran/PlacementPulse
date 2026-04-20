@@ -34,7 +34,7 @@ const DashboardOverview = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [dsaStats, setDsaStats] = useState({ totalSolved: 0, weekly: [], streak: 0 });
-  const [ivStats, setIvStats] = useState({ total: 0, upcoming: 0, upcomingList: [], avgRating: 0 });
+  const [ivStats, setIvStats] = useState({ total: 0, upcoming: 0, scheduled: 0, completed: 0, missed: 0, upcomingList: [], avgRating: 0 });
   const [loading, setLoading] = useState(true);
   const weeklyActivity = dsaStats.weekly || [];
   const maxWeeklySolved = Math.max(0, ...weeklyActivity.map((entry) => Number(entry.solved) || 0));
@@ -67,7 +67,7 @@ const DashboardOverview = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard title="DSA Solved" value={loading ? '...' : dsaStats.totalSolved} icon={Code2} trend={dsaStats.totalSolved > 0 ? `${dsaStats.totalSolved} total` : null} />
       <StatCard title="Current Streak" value={loading ? '...' : `${dsaStats.streak} Days`} icon={Flame} trend={dsaStats.streak > 0 ? 'Keep it up' : null} />
-      <StatCard title="Mock Interviews" value={loading ? '...' : ivStats.total} icon={Users} trend={ivStats.upcoming > 0 ? `${ivStats.upcoming} upcoming` : null} />
+      <StatCard title="Mock Interviews" value={loading ? '...' : ivStats.total} icon={Users} trend={ivStats.scheduled > 0 ? `${ivStats.scheduled} scheduled` : null} />
       <StatCard title="Avg Interview Rating" value={loading ? '...' : ivStats.avgRating || 'N/A'} icon={Target} trend={ivStats.avgRating > 0 ? `out of 5` : null} />
       </div>
 
@@ -118,10 +118,11 @@ const DashboardOverview = () => {
               : ivStats.upcomingList.map((iv) => (
               <div key={iv._id} className="flex items-center p-3 border border-slate-100 dark:border-slate-800 rounded-lg hover:border-primary-200 dark:hover:border-primary-900/50 transition-colors cursor-pointer bg-slate-50 dark:bg-slate-800/50">
                 <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm mr-4">
-                  {iv.company[0]}
+                  {(iv.interviewerName?.[0] || 'I').toUpperCase()}
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{iv.company}{iv.role ? ` - ${iv.role}` : ''}</h4>
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white">{iv.interviewerName} ({iv.interviewerType})</h4>
+                  <p className="text-xs text-slate-500 mt-0.5">{iv.type} • {iv.status}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{new Date(iv.date).toLocaleString()}</p>
                 </div>
               </div>

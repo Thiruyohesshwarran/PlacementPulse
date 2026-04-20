@@ -80,6 +80,214 @@ const companies = [
       { label: 'Interview prep basics', url: 'https://www.interviewbit.com/blog/interview-preparation/' },
     ],
   },
+  {
+    id: 7,
+    name: 'Microsoft',
+    type: 'Product',
+    location: 'Redmond, WA',
+    roles: ['SDE', 'Program Manager'],
+    difficulty: 'Medium-Hard',
+    guideLinks: [
+      { label: 'Microsoft careers', url: 'https://careers.microsoft.com/' },
+      { label: 'Life at Microsoft', url: 'https://careers.microsoft.com/v2/global/en/life-at-microsoft' },
+      { label: 'Coding interview prep', url: 'https://leetcode.com/problemset/' },
+    ],
+  },
+  {
+    id: 8,
+    name: 'Meta',
+    type: 'Product',
+    location: 'Menlo Park, CA',
+    roles: ['Software Engineer', 'Data Engineer'],
+    difficulty: 'Hard',
+    guideLinks: [
+      { label: 'Meta careers', url: 'https://www.metacareers.com/' },
+      { label: 'Meta engineering', url: 'https://engineering.fb.com/' },
+      { label: 'System design prep', url: 'https://www.educative.io/courses/grokking-the-system-design-interview' },
+    ],
+  },
+  {
+    id: 9,
+    name: 'Apple',
+    type: 'Product',
+    location: 'Cupertino, CA',
+    roles: ['Software Engineer', 'ML Engineer'],
+    difficulty: 'Hard',
+    guideLinks: [
+      { label: 'Apple jobs', url: 'https://jobs.apple.com/' },
+      { label: 'Apple machine learning', url: 'https://machinelearning.apple.com/' },
+      { label: 'DSA practice', url: 'https://www.geeksforgeeks.org/' },
+    ],
+  },
+  {
+    id: 10,
+    name: 'Netflix',
+    type: 'Product',
+    location: 'Los Gatos, CA',
+    roles: ['Backend Engineer', 'Data Platform Engineer'],
+    difficulty: 'Hard',
+    guideLinks: [
+      { label: 'Netflix jobs', url: 'https://jobs.netflix.com/' },
+      { label: 'Netflix tech blog', url: 'https://netflixtechblog.com/' },
+      { label: 'Backend roadmap', url: 'https://roadmap.sh/backend' },
+    ],
+  },
+  {
+    id: 11,
+    name: 'Adobe',
+    type: 'Product',
+    location: 'San Jose, CA',
+    roles: ['Software Engineer', 'Frontend Engineer'],
+    difficulty: 'Medium-Hard',
+    guideLinks: [
+      { label: 'Adobe careers', url: 'https://careers.adobe.com/' },
+      { label: 'Adobe blog', url: 'https://blog.adobe.com/' },
+      { label: 'Frontend prep', url: 'https://roadmap.sh/frontend' },
+    ],
+  },
+  {
+    id: 12,
+    name: 'Salesforce',
+    type: 'SaaS',
+    location: 'San Francisco, CA',
+    roles: ['Software Engineer', 'Platform Engineer'],
+    difficulty: 'Medium-Hard',
+    guideLinks: [
+      { label: 'Salesforce careers', url: 'https://careers.salesforce.com/' },
+      { label: 'Engineering at Salesforce', url: 'https://engineering.salesforce.com/' },
+      { label: 'Behavioral prep', url: 'https://www.theforage.com/blog/interview-tips' },
+    ],
+  },
+  {
+    id: 13,
+    name: 'Uber',
+    type: 'Product',
+    location: 'San Francisco, CA',
+    roles: ['Software Engineer', 'Mobile Engineer'],
+    difficulty: 'Hard',
+    guideLinks: [
+      { label: 'Uber careers', url: 'https://www.uber.com/global/en/careers/' },
+      { label: 'Uber engineering', url: 'https://www.uber.com/blog/engineering/' },
+      { label: 'Graph practice', url: 'https://leetcode.com/tag/graph/' },
+    ],
+  },
+  {
+    id: 14,
+    name: 'Atlassian',
+    type: 'SaaS',
+    location: 'Sydney, AU',
+    roles: ['Software Engineer', 'Site Reliability Engineer'],
+    difficulty: 'Medium-Hard',
+    guideLinks: [
+      { label: 'Atlassian careers', url: 'https://www.atlassian.com/company/careers' },
+      { label: 'Atlassian engineering', url: 'https://www.atlassian.com/engineering' },
+      { label: 'SRE roadmap', url: 'https://roadmap.sh/devops' },
+    ],
+  },
+  {
+    id: 15,
+    name: 'Goldman Sachs',
+    type: 'FinTech',
+    location: 'New York, NY',
+    roles: ['Analyst Engineer', 'Full Stack Engineer'],
+    difficulty: 'Medium-Hard',
+    guideLinks: [
+      { label: 'Goldman careers', url: 'https://www.goldmansachs.com/careers/' },
+      { label: 'Engineering culture', url: 'https://www.goldmansachs.com/careers/who-we-look-for/engineering/' },
+      { label: 'Aptitude practice', url: 'https://www.indiabix.com/' },
+    ],
+  },
+  {
+    id: 16,
+    name: 'JPMorgan Chase',
+    type: 'FinTech',
+    location: 'New York, NY',
+    roles: ['Software Engineer', 'Data Analyst'],
+    difficulty: 'Medium',
+    guideLinks: [
+      { label: 'JPMorgan careers', url: 'https://careers.jpmorgan.com/' },
+      { label: 'Students and grads', url: 'https://careers.jpmorgan.com/us/en/students' },
+      { label: 'SQL prep', url: 'https://www.hackerrank.com/domains/sql' },
+    ],
+  },
+  {
+    id: 17,
+    name: 'PayPal',
+    type: 'FinTech',
+    location: 'San Jose, CA',
+    roles: ['Software Engineer', 'Backend Engineer'],
+    difficulty: 'Medium-Hard',
+    guideLinks: [
+      { label: 'PayPal careers', url: 'https://careers.pypl.com/' },
+      { label: 'PayPal newsroom', url: 'https://newsroom.paypal-corp.com/' },
+      { label: 'API design prep', url: 'https://roadmap.sh/backend' },
+    ],
+  },
+  {
+    id: 18,
+    name: 'Walmart Global Tech',
+    type: 'Product',
+    location: 'Bentonville, AR',
+    roles: ['Software Engineer', 'Data Engineer'],
+    difficulty: 'Medium',
+    guideLinks: [
+      { label: 'Walmart tech careers', url: 'https://careers.walmart.com/technology' },
+      { label: 'Walmart global tech', url: 'https://tech.walmart.com/' },
+      { label: 'DSA sheet', url: 'https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems/' },
+    ],
+  },
+  {
+    id: 19,
+    name: 'Zoho',
+    type: 'Product',
+    location: 'Chennai, India',
+    roles: ['Software Developer', 'QA Engineer'],
+    difficulty: 'Easy-Medium',
+    guideLinks: [
+      { label: 'Zoho careers', url: 'https://www.zoho.com/careers/' },
+      { label: 'Zoho interview experiences', url: 'https://www.geeksforgeeks.org/zoho-interview-experience/' },
+      { label: 'Programming basics', url: 'https://www.interviewbit.com/courses/programming/' },
+    ],
+  },
+  {
+    id: 20,
+    name: 'Freshworks',
+    type: 'SaaS',
+    location: 'Chennai, India',
+    roles: ['Product Engineer', 'Frontend Engineer'],
+    difficulty: 'Easy-Medium',
+    guideLinks: [
+      { label: 'Freshworks careers', url: 'https://www.freshworks.com/company/careers/' },
+      { label: 'Freshworks blog', url: 'https://www.freshworks.com/blog/' },
+      { label: 'JavaScript prep', url: 'https://javascript.info/' },
+    ],
+  },
+  {
+    id: 21,
+    name: 'NVIDIA',
+    type: 'Product',
+    location: 'Santa Clara, CA',
+    roles: ['Software Engineer', 'GPU Systems Engineer'],
+    difficulty: 'Hard',
+    guideLinks: [
+      { label: 'NVIDIA careers', url: 'https://www.nvidia.com/en-us/about-nvidia/careers/' },
+      { label: 'NVIDIA developer', url: 'https://developer.nvidia.com/' },
+      { label: 'C++ prep', url: 'https://www.learncpp.com/' },
+    ],
+  },
+  {
+    id: 22,
+    name: 'Oracle',
+    type: 'Product',
+    location: 'Austin, TX',
+    roles: ['Software Developer', 'Cloud Engineer'],
+    difficulty: 'Medium',
+    guideLinks: [
+      { label: 'Oracle careers', url: 'https://www.oracle.com/careers/' },
+      { label: 'Oracle cloud docs', url: 'https://docs.oracle.com/en-us/iaas/Content/home.htm' },
+      { label: 'Cloud prep roadmap', url: 'https://roadmap.sh/devops' },
+    ],
+  },
 ];
 
 const CompanyPrep = () => {
@@ -205,7 +413,7 @@ const CompanyPrep = () => {
       </div>
 
       {selectedCompany && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed -top-6 left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4">
               <div>
