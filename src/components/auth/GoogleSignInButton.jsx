@@ -4,8 +4,8 @@ const GoogleSignInButton = ({ label = 'Continue with Google' }) => {
   const handleLogin = () => {
     const envBase = import.meta.env.VITE_API_URL;
     // Local fallback (disabled for deployment-first flow):
-    const fallbackBase = 'http://localhost:5000';
-    // const fallbackBase = 'https://placementpulse-backend.onrender.com';
+    // const fallbackBase = 'http://localhost:5000';
+    const fallbackBase = 'https://placementpulse-backend.onrender.com';
     const resolvedBase = (envBase || fallbackBase).replace(/\/$/, '');
     const target = `${resolvedBase}/api/auth/google`;
 

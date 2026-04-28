@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  withCredentials: true,
-});
-
-// const apiBase = (import.meta.env.VITE_API_URL || 'https://placementpulse-backend.onrender.com').replace(/\/$/, '');
-
 // const api = axios.create({
-//   baseURL: `${apiBase}/api`,
+//   baseURL: 'http://localhost:5000/api',
 //   withCredentials: true,
 // });
+
+const apiBase = (import.meta.env.VITE_API_URL || 'https://placementpulse-backend.onrender.com').replace(/\/$/, '');
+
+const api = axios.create({
+  baseURL: `${apiBase}/api`,
+  withCredentials: true,
+});
 
 
 const isLikelyJwt = (token) => typeof token === 'string' && token.split('.').length === 3;
