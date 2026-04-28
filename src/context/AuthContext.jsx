@@ -14,7 +14,10 @@ const getStoredUser = () => {
 
   try {
     const parsed = JSON.parse(raw);
-    if (parsed?.token && typeof parsed.token === 'string' && parsed.token.split('.').length === 3) {
+    const hasValidJwt = parsed?.token && typeof parsed.token === 'string' && parsed.token.split('.').length === 3;
+    const hasBasicProfile = parsed?._id && parsed?.email;
+
+    if (hasValidJwt || hasBasicProfile) {
       return parsed;
     }
   } catch {

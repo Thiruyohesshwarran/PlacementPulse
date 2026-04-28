@@ -2,8 +2,19 @@ import { LogIn } from 'lucide-react';
 
 const GoogleSignInButton = ({ label = 'Continue with Google' }) => {
   const handleLogin = () => {
-    // Redirect to backend auth route
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    const envBase = import.meta.env.VITE_API_URL;
+    // Local fallback (disabled for deployment-first flow):
+    const fallbackBase = 'http://localhost:5000';
+    // const fallbackBase = 'https://placementpulse-backend.onrender.com';
+    const resolvedBase = (envBase || fallbackBase).replace(/\/$/, '');
+    const target = `${resolvedBase}/api/auth/google`;
+
+    if (!envBase) {
+      console.warn('VITE_API_URL missing, using deployment fallback for Google auth:', fallbackBase);
+    }
+
+    console.info('Google auth redirect target:', target);
+    window.location.href = target;
   };
 
   return (
@@ -22,4 +33,4 @@ const GoogleSignInButton = ({ label = 'Continue with Google' }) => {
   );
 };
 
-export default GoogleSignInButton;
+export default GoogleSignInButton;

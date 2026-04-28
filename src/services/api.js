@@ -5,6 +5,13 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// const apiBase = (import.meta.env.VITE_API_URL || 'https://placementpulse-backend.onrender.com').replace(/\/$/, '');
+
+// const api = axios.create({
+//   baseURL: `${apiBase}/api`,
+//   withCredentials: true,
+// });
+
 
 const isLikelyJwt = (token) => typeof token === 'string' && token.split('.').length === 3;
 
@@ -16,7 +23,8 @@ api.interceptors.request.use((config) => {
       const { token } = JSON.parse(raw);
       if (isLikelyJwt(token)) {
         config.headers.Authorization = `Bearer ${token}`;
-      } else {
+      } else if (token) {
+        // Clear only malformed token payloads; allow cookie-only auth sessions.
         localStorage.removeItem('userInfo');
       }
     } catch {
