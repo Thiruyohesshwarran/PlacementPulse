@@ -10,13 +10,25 @@ const AuthSuccess = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // The cookie 'token' is already set by the backend
-        // We call /auth/profile to get the user data
-        const { data } = await api.get('/auth/profile', { withCredentials: true });
+        const params = new URLSearchParams(window.location.search);
+        const urlToken = params.get('token');
+
+        if (!urlToken) {
+          throw new Error('No token found in URL');
+        }
+
+        // Temporarily store token so the API interceptor uses it for the profile request
+        localStorage.setItem('userInfo', JSON.stringify({ token: urlToken }));
+
+        // Fetch user profile using the token (which is automatically attached by the interceptor)
+        const { data } = await api.get('/auth/profile');
+        
+        // Construct final user object including the token
+        const finalData = { ...data, token: urlToken };
         
         // Update local state
-        setUser(data);
-        localStorage.setItem('userInfo', JSON.stringify(data));
+        setUser(finalData);
+        localStorage.setItem('userInfo', JSON.stringify(finalData));
         
         // Redirect to dashboard/home
         navigate('/');
